@@ -1,17 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-V9DHVKBD85"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-V9DHVKBD85');
-  </script>
   <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pyramid Slots</title>
+  <title>Pyramid Slots | Pyramid Casino</title>
+  <meta name="description" content="Try your luck on Pyramid Slots at Pyramid Casino. Play for fun, with a shared balance across all games!" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <style>
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
@@ -55,17 +50,6 @@
       min-height: 60vh;
       max-width: 800px;
       margin: 0 auto;
-    }
-    .notice {
-      background: #f9d923;
-      color: #18122b;
-      border-radius: 8px;
-      padding: 1rem 1.5rem;
-      margin: 1.5rem auto 2rem auto;
-      font-weight: bold;
-      max-width: 550px;
-      box-shadow: 0 2px 8px #0002;
-      text-align: center;
     }
     .slots-container {
       background: #231b36;
@@ -186,6 +170,37 @@
       font-size: 1rem;
       z-index: 10;
     }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      color: #ffe277;
+      background: transparent;
+      border: none;
+      font-size: 1.05em;
+      font-weight: bold;
+      text-decoration: underline;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .back-link:hover {
+      color: #f9d923;
+    }
+    .reset-btn {
+      margin-left: 10px;
+      background: #ffe277;
+      color: #18122b;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.97rem;
+      font-weight: bold;
+      padding: 0.28em 1.1em;
+      cursor: pointer;
+      box-shadow: 0 2px 6px #0002;
+      transition: background 0.15s;
+    }
+    .reset-btn:hover {
+      background: #f9d923;
+    }
     @media (max-width: 600px) {
       .main-content { padding: 1rem 0.3rem 2.5rem 0.3rem; }
       .slots-container { max-width: 97vw; }
@@ -208,14 +223,13 @@
     </nav>
   </header>
   <main class="main-content">
-    <div class="notice">
-      <span>✨ Pyramid Slots is for <b>fun only</b> – bet pretend coins, win big, and enjoy! No real money is involved. ✨</span>
-    </div>
+    <a href="index.html" class="back-link">&larr; Back to Menu</a>
     <div class="slots-container">
       <div class="slots-title">Pyramid Slots</div>
       <div class="balance-row">
         <span>Balance:</span>
         <span id="balance">1000</span>
+        <button class="reset-btn" onclick="setCasinoBalance(1000); window.location.reload();">Reset</button>
       </div>
       <div class="bet-controls">
         <label for="bet" style="font-weight:bold;">Bet:</label>
@@ -236,6 +250,16 @@
     Pyramid Casino &copy; <span id="year"></span>
   </footer>
   <script>
+    // Shared balance utilities
+    function getCasinoBalance() {
+      let bal = parseInt(localStorage.getItem('pyramidCasinoBalance'), 10);
+      if (isNaN(bal)) bal = 1000;
+      return bal;
+    }
+    function setCasinoBalance(newBalance) {
+      localStorage.setItem('pyramidCasinoBalance', newBalance);
+    }
+
     document.getElementById('year').textContent = new Date().getFullYear();
 
     // Slot Game Logic
@@ -248,7 +272,6 @@
       {emoji: "🍒", name: "Cherry", payout: 3},
       {emoji: "🪙", name: "Coin", payout: 2}
     ];
-    // Higher at top = more rare
 
     const reelEls = [
       document.getElementById('reel1'),
@@ -262,10 +285,11 @@
     const betDecBtn = document.getElementById('bet-decrease');
     const betIncBtn = document.getElementById('bet-increase');
 
-    let balance = 1000;
+    let balance = getCasinoBalance();
 
     function setBalance(val) {
       balance = val;
+      setCasinoBalance(val);
       balanceEl.textContent = balance;
     }
     function setBet(val) {
@@ -314,7 +338,6 @@
       }
       // Two of a kind
       if (reelIdxs[0] === reelIdxs[1] || reelIdxs[1] === reelIdxs[2] || reelIdxs[0] === reelIdxs[2]) {
-        // Which symbol matched
         let idx = reelIdxs[0] === reelIdxs[1] ? reelIdxs[0] : reelIdxs[2];
         const payout = bet * Math.ceil(symbols[idx].payout / 2);
         return {
@@ -334,11 +357,11 @@
     }
 
     function updateUI() {
-      setBalance(balance);
+      setBalance(getCasinoBalance());
       setBet(Number(betInput.value));
       spinBtn.disabled = (balance <= 0 || Number(betInput.value) < 1 || Number(betInput.value) > balance);
       if (balance <= 0) {
-        resultEl.textContent = "You're out of coins! Refresh to play again.";
+        resultEl.textContent = "You're out of coins! Reset above to play again.";
         resultEl.style.color = "#f9d923";
       }
     }
@@ -373,9 +396,12 @@
       }, delay);
     });
 
-    // Ensure bet UI is always valid
     betInput.addEventListener('blur', updateUI);
     betInput.addEventListener('change', updateUI);
+
+    // Set initial balance and year
+    balanceEl.textContent = getCasinoBalance();
+    document.getElementById('year').textContent = new Date().getFullYear();
 
     updateUI();
   </script>
