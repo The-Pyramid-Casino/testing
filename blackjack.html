@@ -5,21 +5,134 @@
   <title>Blackjack Oasis - Pyramid Casino</title>
   <link rel="stylesheet" href="blackjack.css">
   <style>
-    /* ...your blackjack.css is loaded; extra style if needed... */
-    .card-row { margin: 0.5rem 0; display: flex; gap: 0.5rem; justify-content: center; }
-    .card { display: inline-block; background: #fffbe7; border: 1.5px solid #a0843a; border-radius: 8px; width: 38px; height: 54px; font-size: 1.2rem; font-weight: bold; color: #18122b; text-align: center; padding-top: 0.7em; box-shadow: 0 2px 6px #0002; }
-    .result-msg { font-size: 1.3em; font-weight: bold; margin: 1rem 0 0.5rem 0; color: #f9d923; text-shadow: 0 1px 4px #000; }
-    .balance-row { display: flex; align-items: center; gap: 1.2em; justify-content: center; margin-bottom: 1.2em; }
+    .blackjack-container {
+      background: #231b36;
+      border-radius: 18px;
+      box-shadow: 0 4px 12px #0005;
+      padding: 2.2rem 1.2rem 2rem 1.2rem;
+      max-width: 420px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .blackjack-title {
+      color: #f9d923;
+      font-size: 2.1rem;
+      margin-bottom: 0.7rem;
+      text-shadow: 0 2px 6px #0006;
+    }
+    .balance-row {
+      display: flex;
+      align-items: center;
+      gap: 1.2em;
+      justify-content: center;
+      margin-bottom: 1.2em;
+    }
+    .reset-btn {
+      background: #f9d923;
+      color: #18122b;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.97rem;
+      font-weight: bold;
+      padding: 0.28em 1.1em;
+      cursor: pointer;
+      box-shadow: 0 2px 6px #0002;
+      transition: background 0.15s;
+    }
+    .reset-btn:hover {
+      background: #ffd924;
+    }
+    #betting-area input[type=number] {
+      background: #f3e9dc;
+      color: #18122b;
+      padding: 0.3rem;
+      border-radius: 6px;
+      border: none;
+      font-size: 1rem;
+      text-align: center;
+      width: 70px;
+      margin-right: 0.4em;
+    }
+    #betting-area button, #controls button, #play-again-btn {
+      background: #a0843a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 1.2rem;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: bold;
+      margin-left: 0.5em;
+      margin-right: 0.5em;
+      margin-top: 0.2em;
+      margin-bottom: 0.2em;
+      transition: background 0.15s;
+    }
+    #betting-area button:disabled, #controls button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    #betting-area {
+      margin: 1.2rem auto 2rem auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    #game-area {
+      margin: 2rem auto 1.5rem auto;
+      text-align: center;
+    }
+    .card-row {
+      margin: 0.5rem 0;
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .card {
+      display: inline-block;
+      background: #fffbe7;
+      border: 1.5px solid #a0843a;
+      border-radius: 8px;
+      width: 38px;
+      height: 54px;
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: #18122b;
+      text-align: center;
+      padding-top: 0.7em;
+      box-shadow: 0 2px 6px #0002;
+      transition: transform 0.13s;
+    }
+    .card.red { color: #c72b2b; }
+    .card.back { background: #e2d5a7; color: #c7b76a; border-style: dashed; }
+    .score-row {
+      margin-bottom: 0.4em;
+      font-size: 1.1em;
+      font-weight: bold;
+      color: #ffe277;
+      text-shadow: 0 1px 4px #0005;
+    }
+    .result-msg {
+      font-size: 1.25em;
+      font-weight: bold;
+      margin: 1rem 0 0.5rem 0;
+      color: #f9d923;
+      text-shadow: 0 1px 4px #000;
+      letter-spacing: 0.5px;
+    }
+    #play-again-btn { margin-top: 0.9em; }
+    .bet-label {
+      color: #ffe277;
+      font-weight: 500;
+      margin-right: 0.5em;
+      font-size: 1.08em;
+    }
+    @media (max-width: 600px) {
+      .main-content { padding: 1rem 0.3rem 2.5rem 0.3rem; }
+      .blackjack-container { max-width: 97vw; }
+    }
   </style>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-V9DHVKBD85"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag("js", new Date());
-
-  gtag("config", "G-V9DHVKBD85");
-</script>
 </head>
 <body>
   <header class="header">
@@ -43,26 +156,27 @@
         <button class="reset-btn" onclick="setCasinoBalance(1000); window.location.reload();">Reset</button>
       </div>
       <div id="betting-area">
-        <input type="number" id="bet-amount" min="1" value="10" step="1" style="width:65px;">
+        <span class="bet-label">Place your bet:</span>
+        <input type="number" id="bet-amount" min="1" value="10" step="1">
         <button id="deal-btn">Deal</button>
       </div>
       <div id="game-area" style="display:none;">
         <div>
-          <div><b>Dealer</b></div>
+          <div style="font-weight:bold;color:#ffe277;">Dealer</div>
           <div class="card-row" id="dealer-cards"></div>
-          <div id="dealer-score"></div>
+          <div class="score-row" id="dealer-score"></div>
         </div>
         <div style="margin-top:1em;">
-          <div><b>You</b></div>
+          <div style="font-weight:bold;color:#ffe277;">You</div>
           <div class="card-row" id="player-cards"></div>
-          <div id="player-score"></div>
+          <div class="score-row" id="player-score"></div>
         </div>
         <div id="controls" style="margin-top:1.1em;">
           <button id="hit-btn">Hit</button>
           <button id="stand-btn">Stand</button>
         </div>
         <div class="result-msg" id="result-msg" style="display:none;"></div>
-        <button id="play-again-btn" style="display:none; margin-top:0.8em;">Play Again</button>
+        <button id="play-again-btn" style="display:none;">Play Again</button>
       </div>
     </div>
   </main>
@@ -70,7 +184,7 @@
     Pyramid Casino &copy; <span id="year"></span>
   </footer>
   <script>
-    // Shared balance utilities
+    // Shared balance utilities (matches your site system)
     function getCasinoBalance() {
       let bal = parseInt(localStorage.getItem('pyramidCasinoBalance'), 10);
       if (isNaN(bal)) bal = 1000;
@@ -79,7 +193,6 @@
     function setCasinoBalance(newBalance) {
       localStorage.setItem('pyramidCasinoBalance', newBalance);
     }
-    // Display balance
     function updateBalanceDisplay() {
       document.getElementById('balance').textContent = getCasinoBalance();
     }
@@ -98,7 +211,7 @@
           deck.push({suit, value});
         }
       }
-      for (let i = deck.length - 1; i > 0; i--) { // shuffle
+      for (let i = deck.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [deck[i], deck[j]] = [deck[j], deck[i]];
       }
@@ -121,7 +234,7 @@
 
       const dealerDiv = document.getElementById('dealer-cards');
       if (!revealDealer) {
-        dealerDiv.innerHTML = renderCard(dealerHand[0]) + '<div class="card" style="background:#eee;">?</div>';
+        dealerDiv.innerHTML = renderCard(dealerHand[0]) + '<div class="card back">?</div>';
         document.getElementById('dealer-score').textContent = "Score: ?";
       } else {
         dealerDiv.innerHTML = dealerHand.map(card => renderCard(card)).join('');
@@ -129,8 +242,8 @@
       }
     }
     function renderCard(card) {
-      let color = (card.suit === '♥' || card.suit === '♦') ? 'red' : '#18122b';
-      return `<div class="card" style="color:${color}">${card.value}${card.suit}</div>`;
+      let isRed = (card.suit === '♥' || card.suit === '♦');
+      return `<div class="card${isRed ? ' red' : ''}">${card.value}${card.suit}</div>`;
     }
     function setControls(state) {
       document.getElementById('hit-btn').disabled = !state;
@@ -166,7 +279,7 @@
       document.getElementById('play-again-btn').style.display = 'none';
       setControls(true);
       showHands();
-      // Check for blackjack
+      // Check for initial blackjack
       if (handValue(playerHand) === 21 && handValue(dealerHand) !== 21) {
         setTimeout(() => {
           setCasinoBalance(getCasinoBalance() + Math.floor(bet * 2.5));
@@ -201,7 +314,6 @@
       showHands(true);
       let dealerVal = handValue(dealerHand);
       let playerVal = handValue(playerHand);
-      // Dealer hits on <17
       let dealerAct = setInterval(() => {
         dealerVal = handValue(dealerHand);
         if (dealerVal < 17) {
