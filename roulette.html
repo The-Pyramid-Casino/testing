@@ -2,23 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Pyramid Casino – Sphinx Roulette</title>
-  <meta name="description" content="Play Sphinx Roulette at Pyramid Casino – free chips, shared balance, just for fun!" />
-  <meta name="keywords" content="Pyramid Casino, roulette, free casino, chips, Egypt, play for fun" />
-  <meta name="author" content="Pyramid Casino Team" />
-  <meta property="og:title" content="Sphinx Roulette | Pyramid Casino" />
-  <meta property="og:description" content="Spin the wheel in Sphinx Roulette at Pyramid Casino – free, fun, and with a shared balance across all games!" />
-  <meta property="og:image" content="https://the-pyramid-casino.github.io/assets/pyramid-casino-og-image.png" />
-  <meta property="og:url" content="https://the-pyramid-casino.github.io/roulette.html" />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Pyramid Casino" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Sphinx Roulette | Pyramid Casino" />
-  <meta name="twitter:description" content="Spin the wheel at Pyramid Casino – free roulette with a shared balance!" />
-  <meta name="twitter:image" content="https://the-pyramid-casino.github.io/assets/pyramid-casino-og-image.png" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <link rel="stylesheet" href="roulette.css" />
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-V9DHVKBD85"></script>
@@ -89,7 +74,7 @@
   Pyramid Casino &copy; <span id="year"></span>
 </footer>
 <script>
-// === Shared balance ===
+// Shared balance utilities
 function getCasinoBalance() {
   let bal = parseInt(localStorage.getItem('pyramidCasinoBalance'), 10);
   if (isNaN(bal)) bal = 1000;
@@ -99,7 +84,7 @@ function setCasinoBalance(newBalance) {
   localStorage.setItem('pyramidCasinoBalance', newBalance);
 }
 
-// === UI Elements ===
+// UI Elements
 document.getElementById('year').textContent = new Date().getFullYear();
 const chipBalanceEl = document.getElementById("chip-balance");
 const resetChipsBtn = document.getElementById("reset-chips");
@@ -112,13 +97,12 @@ const payoutResultEl = document.getElementById("payout-result");
 const newRoundBtn = document.getElementById("new-round");
 const clearBetsBtn = document.getElementById("clear-bets");
 
-// === Game State ===
+// Game State (uses shared balance!)
 let chips = getCasinoBalance();
 let selectedChip = 1;
 let bets = {}; // { betKey: {1: count, 5: count, 25: count, 100: count, 1000: count, total: sum} }
 let lastSpin = null;
 
-// === Table/Colors as before ===
 const COLORS = {
   0: 'green',
   1: 'red', 2: 'black', 3: 'red', 4: 'black', 5: 'red', 6: 'black',
@@ -129,13 +113,12 @@ const COLORS = {
 };
 const REDS = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
 
-// === Update chip balance everywhere ===
 function updateChipDisplay() {
   chipBalanceEl.textContent = chips;
   setCasinoBalance(chips);
 }
 
-// === Chip buttons ===
+// Chip buttons
 document.querySelectorAll('.chip-btn').forEach(btn => {
   btn.onclick = () => {
     selectedChip = Number(btn.getAttribute('data-chip'));
@@ -145,7 +128,7 @@ document.querySelectorAll('.chip-btn').forEach(btn => {
 });
 document.querySelector('.chip-btn[data-chip="1"]').classList.add('selected');
 
-// === Reset chips: sets shared balance ===
+// Reset chips: sets shared balance
 resetChipsBtn.onclick = () => {
   if (confirm("Reset your chips to 1000? This will restart the game.")) {
     chips = 1000;
@@ -158,7 +141,7 @@ resetChipsBtn.onclick = () => {
   }
 };
 
-// === Render the roulette table (European 0-36), as before ===
+// Render the roulette table (European 0-36)
 function renderTable() {
   const table = document.createElement('table');
   table.className = 'roulette-layout';
@@ -245,7 +228,7 @@ function renderTable() {
 }
 renderTable();
 
-// === Place a bet, now uses shared chips ===
+// Place a bet (shared chips)
 function placeBet(e) {
   const betKey = e.currentTarget.dataset.bet;
   // Only allow betting if you have chips and haven't spun yet
@@ -259,7 +242,7 @@ function placeBet(e) {
   renderChipsOnTable();
 }
 
-// === Bets summary ===
+// Show bets summary
 function renderBets() {
   document.querySelectorAll('.num-cell, .outside-cell').forEach(td => td.classList.remove('bet-placed'));
   let html = '<strong>Bets:</strong> ';
@@ -275,7 +258,7 @@ function renderBets() {
 }
 renderBets();
 
-// === Chips on table ===
+// Render chip icons on numbers and outside bets
 function renderChipsOnTable() {
   document.querySelectorAll('.bet-chip').forEach(el => el.remove());
   document.querySelectorAll('.bet-total-label').forEach(el => el.remove());
@@ -313,7 +296,7 @@ function betDescription(key) {
   return key;
 }
 
-// === Clear bets ===
+// Clear bets
 clearBetsBtn.onclick = () => {
   for (let key in bets) {
     chips += bets[key].total;
@@ -324,7 +307,7 @@ clearBetsBtn.onclick = () => {
   renderChipsOnTable();
 };
 
-// === Spin! ===
+// Spin!
 spinBtn.onclick = () => {
   if (Object.keys(bets).length === 0 || Object.values(bets).every(b=>b.total===0)) {
     alert("Place at least one bet!");
@@ -338,7 +321,7 @@ spinBtn.onclick = () => {
   updateChipDisplay();
 };
 
-// === Show result ===
+// Show spin result
 function showSpinResult(spin) {
   let color = COLORS[spin];
   spinResultEl.innerHTML = `<div class="spin-ball ${color}">${spin}</div>
@@ -352,4 +335,53 @@ function payout(spin) {
     let chipsForBet = bets[key];
     let amount = chipsForBet.total;
     if (amount === 0) continue;
-    let win = 0, odds
+    let win = 0, odds = 0;
+    if (key === `num_${spin}`) { win = amount * 36; odds = 35;}
+    else if (key.startsWith('dozen_')) {
+      let d = Number(key[6]);
+      if ((spin>=1 && spin<=12 && d===1) || (spin>=13 && spin<=24 && d===2) || (spin>=25 && spin<=36 && d===3)) {
+        win = amount * 3; odds = 2;
+      }
+    }
+    else if (key.startsWith('column_')) {
+      let c = Number(key[7]);
+      const colNums = [];
+      for(let n=1;n<=36;n++) if ((n-1)%3+1===c) colNums.push(n);
+      if (colNums.includes(spin)) { win = amount * 3; odds = 2; }
+    }
+    else if (key==="low" && spin>=1 && spin<=18) { win = amount * 2; odds = 1; }
+    else if (key==="high" && spin>=19 && spin<=36) { win = amount * 2; odds = 1; }
+    else if (key==="even" && spin!==0 && spin%2===0) { win = amount * 2; odds = 1; }
+    else if (key==="odd" && spin%2===1) { win = amount * 2; odds = 1; }
+    else if (key==="red" && REDS.includes(spin)) { win = amount * 2; odds = 1; }
+    else if (key==="black" && spin!==0 && !REDS.includes(spin)) { win = amount * 2; odds = 1; }
+    if (win > 0) {
+      payoutMsg += `<div>Bet on ${betDescription(key)}: +${win-amount} chips (Payout ${odds}:1)</div>`;
+      chips += win;
+      totalWin += (win-amount);
+    } else {
+      payoutMsg += `<div>Bet on ${betDescription(key)}: Lost (-${amount})</div>`;
+    }
+  }
+  if (totalWin>0) {
+    payoutResultEl.innerHTML = `<div class="win">You won ${totalWin} chips!</div>${payoutMsg}`;
+  } else if (totalWin===0) {
+    payoutResultEl.innerHTML = `<div class="push">No net win/loss.</div>${payoutMsg}`;
+  } else {
+    payoutResultEl.innerHTML = `<div class="lose">You lost ${-totalWin} chips!</div>${payoutMsg}`;
+  }
+}
+
+// New round
+newRoundBtn.onclick = () => {
+  bets = {};
+  renderBets();
+  renderChipsOnTable();
+  resultArea.style.display = 'none';
+};
+
+renderChipsOnTable();
+updateChipDisplay();
+</script>
+</body>
+</html>
