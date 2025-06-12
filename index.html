@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-V9DHVKBD85"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-V9DHVKBD85');
-  </script>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -35,7 +27,7 @@
   <meta name="twitter:site" content="@your_twitter" />
 
   <!-- Favicon -->
-  <link rel="icon" href="https://the-pyramid-casino.github.io/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
   <style>
     body {
@@ -80,6 +72,16 @@
       min-height: 60vh;
       max-width: 800px;
       margin: 0 auto;
+    }
+    .balance-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 1.12rem;
+      color: #ffe277;
+      font-weight: bold;
     }
     .home {
       text-align: center;
@@ -152,6 +154,7 @@
       font-weight: bold;
       max-width: 550px;
       box-shadow: 0 2px 8px #0002;
+      text-align: center;
     }
     .footer {
       background: #231b36;
@@ -162,6 +165,22 @@
       left: 0; right: 0; bottom: 0;
       width: 100vw;
       font-size: 1rem;
+    }
+    .reset-btn {
+      margin-left: 10px;
+      background: #ffe277;
+      color: #18122b;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.97rem;
+      font-weight: bold;
+      padding: 0.28em 1.1em;
+      cursor: pointer;
+      box-shadow: 0 2px 6px #0002;
+      transition: background 0.15s;
+    }
+    .reset-btn:hover {
+      background: #f9d923;
     }
     @media (max-width: 700px) {
       .games-list {
@@ -184,13 +203,17 @@
     </div>
     <nav>
       <ul>
-        <li><a href="#">Home</a></li>
+        <li><a href="index.html">Home</a></li>
         <li><a href="#games">Games</a></li>
         <li><a href="#about">About</a></li>
       </ul>
     </nav>
   </header>
   <main class="main-content">
+    <div class="balance-row">
+      <span>Balance: <span id="balance">1000</span></span>
+      <button class="reset-btn" onclick="setCasinoBalance(1000); window.location.reload();">Reset</button>
+    </div>
     <div class="notice">
       <span>✨ Pyramid Casino is a <b>free, fun experiment</b>. No real money is involved and no payments are accepted. Enjoy playing for entertainment only! ✨</span>
     </div>
@@ -209,7 +232,7 @@
         <div class="game-card">
           <h3>Pyramid Slots</h3>
           <p>Spin the reels and match ancient Egyptian symbols to win treasures.</p>
-          <button disabled>Play Demo</button>
+          <a href="slots.html">Play Slots</a>
         </div>
         <div class="game-card">
           <h3>Blackjack Oasis</h3>
@@ -219,7 +242,7 @@
         <div class="game-card">
           <h3>Sphinx Roulette</h3>
           <p>Place your bets on the lucky numbers guarded by the Sphinx.</p>
-          <button disabled>Play Demo</button>
+          <button disabled>Coming Soon</button>
         </div>
       </div>
     </section>
@@ -240,6 +263,17 @@
     Pyramid Casino &copy; <span id="year"></span>
   </footer>
   <script>
+    // Shared balance for all pages
+    function getCasinoBalance() {
+      let bal = parseInt(localStorage.getItem('pyramidCasinoBalance'), 10);
+      if (isNaN(bal)) bal = 1000;
+      return bal;
+    }
+    function setCasinoBalance(newBalance) {
+      localStorage.setItem('pyramidCasinoBalance', newBalance);
+    }
+    // Show balance
+    document.getElementById('balance').textContent = getCasinoBalance();
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
