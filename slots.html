@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Slots Game</title>
+  <style>
+    body {
+      background: #222;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .slot-machine {
+      background: #333;
+      padding: 2em;
+      border-radius: 1em;
+      margin: 2em auto;
+      width: 320px;
+      box-shadow: 0 0 18px #000;
+    }
+    .reels {
+      display: flex;
+      justify-content: center;
+      margin: 1em 0;
+    }
+    .reel {
+      background: #222;
+      border: 2px solid #555;
+      border-radius: 1em;
+      width: 60px;
+      height: 60px;
+      margin: 0 10px;
+      font-size: 2.5em;
+      line-height: 60px;
+    }
+    #spinBtn {
+      font-size: 1.2em;
+      padding: 0.5em 2em;
+      border-radius: 0.5em;
+      border: none;
+      background: #e7c34b;
+      color: #222;
+      cursor: pointer;
+    }
+    #spinBtn:active {
+      background: #b59b39;
+    }
+    #result {
+      font-size: 1.2em;
+      margin-top: 1em;
+    }
+  </style>
+</head>
+<body>
+  <div class="slot-machine">
+    <h1>Slots</h1>
+    <div class="reels">
+      <div id="reel1" class="reel">🍒</div>
+      <div id="reel2" class="reel">🍋</div>
+      <div id="reel3" class="reel">🍉</div>
+    </div>
+    <button id="spinBtn">Spin</button>
+    <p id="result"></p>
+  </div>
+  <script>
+    window.onload = function() {
+      const symbols = ["🍒", "🍋", "🍉", "🍇", "🔔", "7️⃣"];
+      const reelEls = [
+        document.getElementById('reel1'),
+        document.getElementById('reel2'),
+        document.getElementById('reel3')
+      ];
+      const resultEl = document.getElementById('result');
+      document.getElementById('spinBtn').onclick = () => {
+        let reels = [];
+        for (let i = 0; i < 3; i++) {
+          const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+          reelEls[i].textContent = symbol;
+          reels.push(symbol);
+        }
+        if (reels[0] === reels[1] && reels[1] === reels[2]) {
+          resultEl.textContent = `🎉 JACKPOT! You got ${reels[0]} ${reels[1]} ${reels[2]}`;
+          resultEl.style.color = "#e7c34b";
+        } else if (reels[0] === reels[1] || reels[1] === reels[2] || reels[0] === reels[2]) {
+          resultEl.textContent = `Nice! Two matched: ${reels.join(" ")}`;
+          resultEl.style.color = "#7fffd4";
+        } else {
+          resultEl.textContent = "Try again!";
+          resultEl.style.color = "#fff";
+        }
+      };
+    };
+  </script>
+</body>
+</html>
